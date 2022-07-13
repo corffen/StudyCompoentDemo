@@ -1,0 +1,110 @@
+//module 库 依赖此gradle 配置公用属性
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        flavorDimensions "default"
+        vectorDrawables.useSupportLibrary = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+                includeCompileClasspath true
+            }
+        }
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+                includeCompileClasspath true
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            // 这里用于来区别是模块化运行还是单独运行  运行的方式不同 加载的manifest文件就不同
+//            if (runModule.toBoolean()) {
+//                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+//            } else {
+//                manifest.srcFile 'src/main/release/AndroidManifest.xml'
+//                resources {
+//                    //正式版本时，排除debug文件夹下所有调试文件
+//                    exclude 'src/debug/*'
+//                }
+//            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildTypes {
+        release {
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+        debug {}
+        dev {}
+    }
+
+//    if (runModule.toBoolean()) {
+//        configurations {
+//            //这里要排除到这个包，这个包会与 com.google.guava 冲突，导致编译不过
+//            all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+//        }
+//
+//        packagingOptions {
+//            pickFirst 'lib/x86/libc++_shared.so'
+//            pickFirst 'lib/x86/libc++_shared.so'
+//            pickFirst 'lib/x86_64/libc++_shared.so'
+//            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+//            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+//            pickFirst 'assets/libwbsafeedit_x86_64'
+//            pickFirst 'assets/libwbsafeedit_x86'
+//            pickFirst 'assets/libwbsafeedit_64'
+//            pickFirst 'assets/libwbsafeedit'
+//            pickFirst 'assets/h5_qr_back.png'
+//            pickFirst 'assets/com.tencent.open.config.json'
+//            pickFirst 'lib/arm64-v8a/libwechatbacktrace.so'
+//            pickFirst 'lib/armeabi-v7a/libwechatbacktrace.so'
+//            pickFirst 'lib/*/libRSSupport.so'
+//            pickFirst 'lib/*/librsjni.so'
+//            pickFirst 'lib/*/librsjni_androidx.so'
+//        }
+//    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar", "*.aar"])
+    implementation project(path: ':common-base')
+    implementation project(path: ':business-socket')
+    implementation project(path: ':common-database')
+    implementation project(path: ':business-sink')
+    if (runModule.toBoolean()) {
+        annotationProcessor rootProject.ext.dependencies['arouter-compiler']
+        annotationProcessor rootProject.ext.dependencies["dagger_compiler"]
+        annotationProcessor rootProject.ext.dependencies["dagger_android_processor"]
+
+        kapt rootProject.ext.dependencies['arouter-compiler']
+        kapt rootProject.ext.dependencies["dagger_compiler"]
+        kapt rootProject.ext.dependencies["dagger_android_processor"]
+    } else {
+        compileOnly rootProject.ext.dependencies['arouter-compiler']
+        compileOnly rootProject.ext.dependencies['dagger_compiler']
+        compileOnly rootProject.ext.dependencies['dagger_android_processor']
+    }
+}

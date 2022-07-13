@@ -1,0 +1,21 @@
+ext{
+    // app 相关版本控制
+    android = [
+            minSdkVersion    : 21,
+            targetSdkVersion : 31,
+            compileSdkVersion: 31,
+            buildToolsVersion: '30.0.3',
+            versionCode      : 3310,
+            versionName      : "4.5.0"
+    ]
+
+    //version配置
+    versions = [
+            "support-version"         : "30.0.3",
+            "junit-version"           : "4.12",
+            "arouter_version"         : "1.5.2",
+            "arouter_compiler_version": "1.2.2",
+            "kotlin_version"          : '1.4.32',
+    ]
+
+}
