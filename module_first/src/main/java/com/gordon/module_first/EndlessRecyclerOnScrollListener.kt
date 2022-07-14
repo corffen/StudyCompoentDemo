@@ -1,5 +1,6 @@
 package com.gordon.module_first
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 
@@ -15,11 +16,11 @@ abstract class EndlessRecyclerOnScrollListener : RecyclerView.OnScrollListener()
             // 获取最后一个完全显示的itemPosition
             val lastItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
             val itemCount = layoutManager.itemCount
-
             // 判断是否滑动到了最后一个Item，并且是向左滑动
             if (lastItemPosition == itemCount - 1 && isSlidingToLeft && isNeedLoadMore) {
                 // 加载更多
                 onLoadMore()
+                Log.d(TAG, "onScrollStateChanged: loadMore()")
             }
         }
     }
@@ -27,12 +28,13 @@ abstract class EndlessRecyclerOnScrollListener : RecyclerView.OnScrollListener()
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         // dx值大于0表示正在向左滑动，小于或等于0表示向右滑动或停止
+        Log.d(TAG, "onScrolled: dx=$dx")
         isSlidingToLeft = dx > 0
         if (isNeedLoadMore) {
             val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
             val lastItemPosition = layoutManager.findLastVisibleItemPosition()
             val itemCount = layoutManager.itemCount
-
+            Log.i(TAG, "onScrolled: lastItemPosition=$lastItemPosition")
             // 判断是否滑动到了最后一个Item，并且是向左滑动
             if (lastItemPosition == itemCount - 1) {
                 if (dx > 50) {
@@ -43,6 +45,7 @@ abstract class EndlessRecyclerOnScrollListener : RecyclerView.OnScrollListener()
             }
         }
     }
+
 
     fun needLoadMore(need: Boolean) {
         isNeedLoadMore = need
@@ -55,4 +58,8 @@ abstract class EndlessRecyclerOnScrollListener : RecyclerView.OnScrollListener()
 
     abstract fun updateBottomAppear()
     abstract fun updateBottomDisappear()
+
+    companion object {
+        private const val TAG = "EndlessRecyclerOnScroll"
+    }
 }

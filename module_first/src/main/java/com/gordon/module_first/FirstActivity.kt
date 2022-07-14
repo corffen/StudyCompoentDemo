@@ -1,15 +1,15 @@
 package com.gordon.module_first
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ToastUtils
 import com.gordon.module_first.databinding.ActivityFirstBinding
 import com.gordon.module_first.databinding.ActivityFirstBinding.*
 import com.gordon.module_first.databinding.ItemBottomBinding
-import java.util.zip.Inflater
 
 /**
  * @author gaofeng
@@ -28,6 +28,7 @@ class FirstActivity : AppCompatActivity() {
                 bottomBinding.tvBottom.setText("释放更多")
 
             }
+
             override fun updateBottomDisappear() {
                 bottomBinding.tvBottom.setText("查看更多")
             }
@@ -45,12 +46,9 @@ class FirstActivity : AppCompatActivity() {
             adapter = horizonAdapter
             addOnScrollListener(scrollListener)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
         updateData()
     }
+
 
     private fun updateData() {
         val dataList = mutableListOf<String>()
