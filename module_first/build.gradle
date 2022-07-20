@@ -1,17 +1,34 @@
-plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
 }
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.kotlin.android'
+def cfg = rootProject.ext
 
 android {
-    compileSdk 31
+    compileSdk cfg.android.compileSdkVersion
 
     defaultConfig {
-        minSdk 21
-        targetSdk 31
+        if (isModule.toBoolean()) {
+            applicationId "com.gordon.module_first"
+        }
+        minSdk cfg.android.minSdkVersion
+        targetSdk cfg.android.targetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+    }
+    sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }
+        }
     }
 
     buildTypes {
@@ -33,5 +50,5 @@ android {
 }
 
 dependencies {
-    api project(path: ':common')
+    implementation project(path: ':common')
 }
